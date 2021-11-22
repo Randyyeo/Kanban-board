@@ -1,5 +1,6 @@
 <template>
   <div class="container mt-5">
+    <h1 class="text-center">Kanban Board</h1>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
@@ -7,7 +8,7 @@
           class="btn btn-primary float-right"
           @click="add_status = true"
         >
-          +
+          Add extra board
         </button>
         <div v-if="add_status" class="d-flex">
           <input
@@ -20,24 +21,41 @@
         </div>
       </div>
     </div>
-    <div v-for="(arr, index) in arrArrays" :key="index">
+    <div>
       <p class="text-danger" v-if="error">Error has occurred</p>
-      <div class="row mt-5 border border-2 rounded-2">
-        <h1>{{ index }}</h1>
+      <div
+        class="row my-5 border border-2 rounded-2"
+        v-for="(arr, index) in arrArrays"
+        :key="index"
+      >
+        <h1>
+          {{ index }}
+          <i
+            style="cursor: pointer; font-size: 25px"
+            @click="modelArr[index].updateTitle = true"
+            class="fas fa-edit"
+          ></i>
+        </h1>
+        <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateTitle">
+          <input type="text" placeholder="Update Board Name" v-model="newName" class="form-control" />
+          <button class="btn btn-primary ms-2" @click="update(index)">
+            Update
+          </button>
+        </div>
+        <h3>{{arr.desc}} <i
+            style="cursor: pointer; font-size: 25px"
+            @click="modelArr[index].updateDesc = true"
+            class="fas fa-edit"
+          ></i></h3>
+        <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateDesc">
+          <input type="text" placeholder="Update Board Description" v-model="newDesc" class="form-control" />
+          <button class="btn btn-primary ms-2" @click="updateDesc(index)">
+            Update
+          </button>
+        </div>
+
         <div class="row mb-3">
           <div class="col-md-6 col-lg-4 d-flex">
-            <!--             <input
-              id="input-2"
-              v-model="newTask"
-              required
-              placeholder="Enter Task"
-              @keyup.enter="add"
-              class="form-control"
-            />
-            <button @click="add(index)" class="ml-3 btn btn-primary ms-2">
-              Add
-            </button> -->
-            <!-- Button trigger modal -->
             <button
               type="button"
               class="btn btn-primary"
@@ -68,11 +86,11 @@
                     <select
                       class="form-select mb-3"
                       aria-label="Default select example"
-                      v-model="select"
+                      v-model="modelArr[index].select"
                     >
                       <option
                         :value="index1"
-                        v-for="(sub, index1) in arr"
+                        v-for="(sub, index1) in arr.cols"
                         :key="index1"
                       >
                         {{ index1 }}
@@ -82,7 +100,13 @@
                     <input
                       type="text"
                       class="form-control"
-                      v-model="taskName"
+                      v-model="modelArr[index].taskName"
+                    />
+                    <label class="form-label">Task Description</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="modelArr[index].taskDescription"
                     />
                   </div>
                   <div class="modal-footer">
@@ -135,10 +159,14 @@
                     <input
                       type="number"
                       class="form-control"
-                      v-model="numberMax"
+                      v-model="modelArr[index].numberMax"
                     />
                     <label class="form-label">Column Name</label>
-                    <input type="text" class="form-control" v-model="colName" />
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="modelArr[index].colName"
+                    />
                   </div>
                   <div class="modal-footer">
                     <button
@@ -164,7 +192,7 @@
         </div>
         <div
           class="col-md-6 col-lg-4"
-          v-for="(sub, index1) in arr"
+          v-for="(sub, index1) in arr.cols"
           :key="index1"
         >
           <div class="p-2 alert alert-secondary">
@@ -179,16 +207,26 @@
               @end="onEnd"
             >
               <div
-                class="card w-100"
-                v-for="element in sub.list"
+                class="card w-100 mb-3"
+                v-for="(element, index2) in sub.list"
                 :key="element.name"
                 style="width: 18rem"
               >
                 <div class="card-body">
-                  <h5 class="card-title">{{ element.name }}</h5>
+                  <div class="card-title d-flex justify-content-between">
+                    <h5>{{ element.name }}</h5>
+                    <i
+                      @click="remove(index, index1, index2)"
+                      style="font-size: 24px; cursor: pointer"
+                      class="fas fa-times"
+                    ></i>
+                  </div>
                   <p class="card-text">
-                    {{ element.date }}
+                    {{ element.description }}
                   </p>
+                </div>
+                <div class="card-footer" v-if="element.date">
+                  Date Added: {{ element.date }}
                 </div>
               </div>
             </draggable>
@@ -211,31 +249,42 @@ export default {
   data() {
     return {
       // for new tasks
-      colName: null,
-      numberMax: null,
-      select: null,
-      taskName: null,
+      newDesc: null,
+      newName: null,
       name: null,
       error: false,
-      add_modal: false,
+      
       add_status: false,
       max: 4,
       newTask: "",
       // 4 arrays to keep track of our 4 statuses
-
+      modelArr: {
+        Tasks: {
+          updateTitle: false,
+          updateDesc: false,
+          select: null,
+          taskName: null,
+          taskDescription: null,
+          colName: null,
+          numberMax: null,
+        },
+      },
       arrArrays: {
         Tasks: {
-          ToDo: {
-            max: 4,
-            list: [
-              { name: "Code Sign Up Page", date: "" },
-              { name: "Test Dashboard", date: "" },
-              { name: "Style Registration", date: "" },
-              { name: "Help with Designs", date: "" },
-            ],
+          desc: "Tasks that are outstanding",
+          cols: {
+            ToDo: {
+              max: 4,
+              list: [
+                { name: "Code Sign Up Page", date: "", description: "" },
+                { name: "Test Dashboard", date: "", description: "" },
+                { name: "Style Registration", date: "", description: "" },
+                { name: "Help with Designs", date: "", description: "" },
+              ],
+            },
+            InProgress: { max: 2, list: [] },
+            Done: { max: 4, list: [] },
           },
-          InProgress: { max: 2, list: [] },
-          Done: { max: 4, list: [] },
         },
       },
       length: null,
@@ -244,60 +293,129 @@ export default {
       afterIndex: null,
       afterCol: null,
       initialposition: null,
-      afterposition: null
+      afterposition: null,
     };
   },
+  watch: {
+    arrArrays: {
+      // This will let Vue know to look inside the array
+      deep: true,
+
+      // We have to move our method to a handler field
+      handler() {
+        console.log("The list of colours has changed!");
+        return this.arrArrays;
+      },
+    },
+  },
   methods: {
+    update(index) {
+      var newname = this.newName;
+      delete Object.assign(this.arrArrays, {
+        [newname]: this.arrArrays[index],
+      })[index];
+      this.modelArr[index].updateTitle = false;
+      delete Object.assign(this.modelArr, { [newname]: this.modelArr[index] })[
+        index
+      ];
+      this.newName = "";
+    },
+    updateDesc(index) {
+      var newname = this.newDesc;
+      this.arrArrays[index].desc = newname;
+      this.newDesc = ""
+      this.modelArr[index].updateDesc = false;
+    },
+    remove(index, index1, index2) {
+      var list = this.arrArrays[index][index1]["list"];
+      for (var i = 0; i < list.length; i++) {
+        if (i === index2) {
+          list.splice(i, 1);
+        }
+      }
+
+      this.arrArrays[index][index1]["list"] = list;
+      console.log(this.arrArrays);
+    },
     addTask(index) {
-      if (this.select && this.taskName) {
+      if (this.modelArr[index].select && this.modelArr[index].taskName) {
         var date = new Date();
         date = String(date).substring(4, 15);
-        this.arrArrays[index][this.select]["list"].push({
-          name: this.taskName,
+        console.log(this.arrArrays);
+        var list = this.arrArrays[index][this.modelArr[index].select].list;
+        list.push({
+          name: this.modelArr[index].taskName,
           date,
+          description: this.modelArr[index].taskDescription,
         });
+        this.$set(
+          this.arrArrays[index][this.modelArr[index].select],
+          "list",
+          list
+        );
+        console.log(this.arrArrays);
       }
-      this.select = null;
-      this.taskName = "";
+      this.modelArr[index].select = "";
+      this.modelArr[index].taskName = "";
+      this.modelArr[index].taskDescription = "";
     },
     addBoard() {
-      this.arrArrays[this.name] = {};
+      this.$set(this.arrArrays, this.name, {});
+      this.$set(this.modelArr, this.name, {
+        updateTitle: false,
+        updateDesc: false,
+        select: null,
+        taskName: null,
+        taskDescription: null,
+        colName: null,
+        numberMax: null,
+      });
+      this.add_status = false;
       this.name = "";
     },
     addCol(index) {
-      this.arrArrays[index][this.colName] = { max: this.numberMax, list: [] };
-      this.colName = "";
-      this.numberMax = "";
+      this.$set(this.arrArrays[index], this.modelArr[index].colName, {
+        max: this.modelArr[index].numberMax,
+        list: [],
+      });
+
+      this.modelArr[index]["colName"] = null;
+      this.modelArr[index]["numberMax"] = null;
     },
-    onStart(moved ,evt){
-      console.log(evt)
-      console.log(moved)
-      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText
-      
-      var index = moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0].innerText
+    onStart(moved) {
+      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
+
+      var index =
+        moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
+          .innerText;
       this.initialIndex = index;
-      this.inititalCol = col
-      
+      this.inititalCol = col;
     },
-    onEnd(moved){
-      
-      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText
-      
-      var index = moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0].innerText
-      
-      this.max = this.arrArrays[index][col].max 
-      if (this.arrArrays[index][col].list.length > this.max){
-        
-        var remove = this.arrArrays[index][col].list.splice(this.afterposition, 1)
-        console.log(remove)
-        this.arrArrays[this.initialIndex][this.inititalCol].list.splice(this.initialposition, 0, {name: remove[0].name, date: remove[0].date});
-        console.log(this.arrArrays)
+    onEnd(moved) {
+      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
+
+      var index =
+        moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
+          .innerText;
+
+      this.max = this.arrArrays[index][col].max;
+      if (this.arrArrays[index][col].list.length > this.max) {
+        var remove = this.arrArrays[index][col].list.splice(
+          this.afterposition,
+          1
+        );
+        console.log(remove);
+        this.arrArrays[this.initialIndex][this.inititalCol].list.splice(
+          this.initialposition,
+          0,
+          { name: remove[0].name, date: remove[0].date }
+        );
+        console.log(this.arrArrays);
       }
     },
     checkMove(evt) {
-      
-      this.initialposition = evt.draggedContext.index
-      this.afterposition = evt.draggedContext.futureIndex
+      this.initialposition = evt.draggedContext.index;
+      this.afterposition = evt.draggedContext.futureIndex;
     },
   },
 };
