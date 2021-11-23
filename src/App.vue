@@ -1,28 +1,6 @@
 <template>
   <div class="container mt-5">
     <h1 class="text-center">Kanban Board</h1>
-    <div v-if="alert" class="position-fixed top-0  p-3" style="z-index: 999">
-      <div
-        id="liveToast"
-        class="toast hide"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        v-if="alert"
-      >
-        <div class="toast-header">
-          <strong class="me-auto">Bootstrap</strong>
-          <small>11 mins ago</small>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="toast"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="toast-body">Hello, world! This is a toast message.</div>
-      </div>
-    </div>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
@@ -44,7 +22,6 @@
       </div>
     </div>
     <div>
-      <p class="text-danger" v-if="error">Error has occurred</p>
       <div
         class="row my-5 border border-2 rounded-2"
         v-for="(arr, index) in arrArrays"
@@ -202,6 +179,18 @@
                       class="form-control"
                       v-model="modelArr[index].colName"
                     />
+                    <label class="form-label">Column Colour</label>
+                    <input
+                      type="color"
+                      class="form-control w-25"
+                      v-model="modelArr[index].back"
+                    />
+                    <label class="form-label">Header Colour</label>
+                    <input
+                      type="color"
+                      class="form-control w-25"
+                      v-model="modelArr[index].color"
+                    />
                   </div>
                   <div class="modal-footer">
                     <button
@@ -230,13 +219,25 @@
           v-for="(sub, index1) in arr.cols"
           :key="index1"
         >
-          <div class="p-2 alert alert-secondary">
-            <h3>{{ index1 }}</h3>
-            <!-- Backlog draggable component. Pass arrBackLog to list prop -->
+          <div class="p-3 mb-3" :style="'background-color:' + sub.back">
+            <div
+              class="d-flex justify-content-between"
+              :style="'color:' + sub.color"
+            >
+              <h3>{{ index1 }}</h3>
+              <i
+                @click="removeCard(index, index1)"
+                style="font-size: 24px; cursor: pointer"
+                class="fas fa-times"
+              ></i>
+            </div>
+            
+
+            
             <draggable
               class="list-group kanban-column"
               :list="sub.list"
-              :group="{ name: 'tasks', put: sub.disable}"
+              :group="{ name: 'tasks', put: sub.disable }"
               :move="checkMove"
               @start="onStart"
               @end="onEnd"
@@ -275,7 +276,7 @@
 <script>
 //import draggable
 import draggable from "vuedraggable";
-
+import Vue from 'vue'
 export default {
   components: {
     //import draggable as a component
@@ -287,7 +288,6 @@ export default {
       newDesc: null,
       newName: null,
       name: null,
-      error: false,
       alert: false,
       add_status: false,
       max: 4,
@@ -302,6 +302,9 @@ export default {
           taskDescription: null,
           colName: null,
           numberMax: null,
+          back: "",
+          color: "",
+          updateCard: false,
         },
       },
       arrArrays: {
@@ -311,6 +314,8 @@ export default {
             ToDo: {
               max: 4,
               disable: true,
+              back: "blue",
+              color: "white",
               list: [
                 { name: "Code Sign Up Page", date: "", description: "" },
                 { name: "Test Dashboard", date: "", description: "" },
@@ -318,8 +323,20 @@ export default {
                 { name: "Help with Designs", date: "", description: "" },
               ],
             },
-            InProgress: { max: 2,disable: true, list: [] },
-            Done: { max: 4,disable: true, list: [] },
+            InProgress: {
+              back: "yellow",
+              color: "black",
+              max: 2,
+              disable: true,
+              list: [],
+            },
+            Done: {
+              back: "green",
+              color: "black",
+              max: 4,
+              disable: true,
+              list: [],
+            },
           },
         },
       },
@@ -332,7 +349,7 @@ export default {
       afterposition: null,
     };
   },
-  
+
   watch: {
     // whenever question changes, this function will run
     arrArrays: {
@@ -340,18 +357,20 @@ export default {
       deep: true,
       // We have to move our method to a handler field
       handler() {
-        for (var arr in this.arrArrays){
-          for (var sub in this.arrArrays[arr].cols){
-            if (this.arrArrays[arr].cols[sub].list.length >= this.arrArrays[arr].cols[sub].max){
+        for (var arr in this.arrArrays) {
+          for (var sub in this.arrArrays[arr].cols) {
+            if (
+              this.arrArrays[arr].cols[sub].list.length >=
+              this.arrArrays[arr].cols[sub].max
+            ) {
               this.arrArrays[arr].cols[sub].disable = false;
-              this.error = true;
+              
             } else {
               this.arrArrays[arr].cols[sub].disable = true;
             }
           }
         }
-        
-        
+        console.log("hi")
       },
     },
   },
@@ -366,13 +385,17 @@ export default {
         index
       ];
       this.newName = "";
-      
     },
     updateDesc(index) {
       var newname = this.newDesc;
       this.arrArrays[index].desc = newname;
       this.newDesc = "";
       this.modelArr[index].updateDesc = false;
+    },
+    removeCard(index, index1) {
+      
+      Vue.delete(this.arrArrays[index].cols, index1)
+      
     },
     remove(index, index1, index2) {
       var list = this.arrArrays[index].cols[index1]["list"];
@@ -383,7 +406,6 @@ export default {
       }
 
       this.arrArrays[index].cols[index1]["list"] = list;
-      
     },
     addTask(index) {
       if (this.modelArr[index].select && this.modelArr[index].taskName) {
@@ -422,8 +444,10 @@ export default {
         taskDescription: null,
         colName: null,
         numberMax: null,
+        back: "",
+        color: "",
       });
-      
+
       this.add_status = false;
       this.name = "";
     },
@@ -432,11 +456,13 @@ export default {
         max: this.modelArr[index].numberMax,
         list: [],
         disable: true,
+        back: this.modelArr[index].back,
+        color: this.modelArr[index].color,
       });
-      
 
       this.modelArr[index]["colName"] = null;
       this.modelArr[index]["numberMax"] = null;
+      this.modelArr[index]["color"] = null;
     },
     onStart(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
@@ -447,7 +473,7 @@ export default {
       this.initialIndex = index;
       this.inititalCol = col;
       console.log(this.initialIndex);
-      console.log(this.inititalCol)
+      console.log(this.inititalCol);
     },
     onEnd(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
@@ -455,10 +481,10 @@ export default {
       var index =
         moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
           .innerText;
-      
-      console.log(col)
-      console.log(index)
-      console.log(this.arrArrays)
+
+      console.log(col);
+      console.log(index);
+      console.log(this.arrArrays);
       /* this.max = this.arrArrays[index].cols[col].max 
       if (this.arrArrays[index].cols.list.length > this.max){
         
@@ -467,8 +493,6 @@ export default {
         this.arrArrays[this.initialIndex][this.inititalCol].list.splice(this.initialposition, 0, {name: remove[0].name, date: remove[0].date});
         
       } */
-      
-      
     },
     checkMove(evt) {
       this.initialposition = evt.draggedContext.index;
@@ -483,5 +507,3 @@ export default {
   min-height: 300px;
 }
 </style>
-
-
