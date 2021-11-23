@@ -1,6 +1,28 @@
 <template>
   <div class="container mt-5">
     <h1 class="text-center">Kanban Board</h1>
+    <div v-if="alert" class="position-fixed top-0  p-3" style="z-index: 999">
+      <div
+        id="liveToast"
+        class="toast hide"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        v-if="alert"
+      >
+        <div class="toast-header">
+          <strong class="me-auto">Bootstrap</strong>
+          <small>11 mins ago</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="toast-body">Hello, world! This is a toast message.</div>
+      </div>
+    </div>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
@@ -37,18 +59,31 @@
           ></i>
         </h1>
         <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateTitle">
-          <input type="text" placeholder="Update Board Name" v-model="newName" class="form-control" />
+          <input
+            type="text"
+            placeholder="Update Board Name"
+            v-model="newName"
+            class="form-control"
+          />
           <button class="btn btn-primary ms-2" @click="update(index)">
             Update
           </button>
         </div>
-        <h3>{{arr.desc}} <i
+        <h3>
+          {{ arr.desc }}
+          <i
             style="cursor: pointer; font-size: 25px"
             @click="modelArr[index].updateDesc = true"
             class="fas fa-edit"
-          ></i></h3>
+          ></i>
+        </h3>
         <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateDesc">
-          <input type="text" placeholder="Update Board Description" v-model="newDesc" class="form-control" />
+          <input
+            type="text"
+            placeholder="Update Board Description"
+            v-model="newDesc"
+            class="form-control"
+          />
           <button class="btn btn-primary ms-2" @click="updateDesc(index)">
             Update
           </button>
@@ -201,7 +236,7 @@
             <draggable
               class="list-group kanban-column"
               :list="sub.list"
-              group="tasks"
+              :group="{ name: 'tasks', put: sub.disable}"
               :move="checkMove"
               @start="onStart"
               @end="onEnd"
@@ -253,7 +288,7 @@ export default {
       newName: null,
       name: null,
       error: false,
-      
+      alert: false,
       add_status: false,
       max: 4,
       newTask: "",
@@ -275,6 +310,7 @@ export default {
           cols: {
             ToDo: {
               max: 4,
+              disable: true,
               list: [
                 { name: "Code Sign Up Page", date: "", description: "" },
                 { name: "Test Dashboard", date: "", description: "" },
@@ -282,8 +318,8 @@ export default {
                 { name: "Help with Designs", date: "", description: "" },
               ],
             },
-            InProgress: { max: 2, list: [] },
-            Done: { max: 4, list: [] },
+            InProgress: { max: 2,disable: true, list: [] },
+            Done: { max: 4,disable: true, list: [] },
           },
         },
       },
@@ -296,15 +332,26 @@ export default {
       afterposition: null,
     };
   },
+  
   watch: {
+    // whenever question changes, this function will run
     arrArrays: {
       // This will let Vue know to look inside the array
       deep: true,
-
       // We have to move our method to a handler field
       handler() {
-        console.log("The list of colours has changed!");
-        return this.arrArrays;
+        for (var arr in this.arrArrays){
+          for (var sub in this.arrArrays[arr].cols){
+            if (this.arrArrays[arr].cols[sub].list.length >= this.arrArrays[arr].cols[sub].max){
+              this.arrArrays[arr].cols[sub].disable = false;
+              this.error = true;
+            } else {
+              this.arrArrays[arr].cols[sub].disable = true;
+            }
+          }
+        }
+        
+        
       },
     },
   },
@@ -319,48 +366,54 @@ export default {
         index
       ];
       this.newName = "";
+      
     },
     updateDesc(index) {
       var newname = this.newDesc;
       this.arrArrays[index].desc = newname;
-      this.newDesc = ""
+      this.newDesc = "";
       this.modelArr[index].updateDesc = false;
     },
     remove(index, index1, index2) {
-      var list = this.arrArrays[index][index1]["list"];
+      var list = this.arrArrays[index].cols[index1]["list"];
       for (var i = 0; i < list.length; i++) {
         if (i === index2) {
           list.splice(i, 1);
         }
       }
 
-      this.arrArrays[index][index1]["list"] = list;
-      console.log(this.arrArrays);
+      this.arrArrays[index].cols[index1]["list"] = list;
+      
     },
     addTask(index) {
       if (this.modelArr[index].select && this.modelArr[index].taskName) {
         var date = new Date();
         date = String(date).substring(4, 15);
         console.log(this.arrArrays);
-        var list = this.arrArrays[index][this.modelArr[index].select].list;
+        var list = this.arrArrays[index].cols[this.modelArr[index].select].list;
         list.push({
           name: this.modelArr[index].taskName,
           date,
           description: this.modelArr[index].taskDescription,
         });
         this.$set(
-          this.arrArrays[index][this.modelArr[index].select],
+          this.arrArrays[index].cols[this.modelArr[index].select],
           "list",
           list
         );
-        console.log(this.arrArrays);
+        /* this.arrArrays[index].cols[this.modelArr[index].select].list.push({
+          name: this.modelArr[index].taskName,
+          date,
+          description: this.modelArr[index].taskDescription,
+        })
+        console.log(this.arrArrays); */
       }
       this.modelArr[index].select = "";
       this.modelArr[index].taskName = "";
       this.modelArr[index].taskDescription = "";
     },
     addBoard() {
-      this.$set(this.arrArrays, this.name, {});
+      this.$set(this.arrArrays, this.name, { desc: "", cols: {} });
       this.$set(this.modelArr, this.name, {
         updateTitle: false,
         updateDesc: false,
@@ -370,14 +423,17 @@ export default {
         colName: null,
         numberMax: null,
       });
+      
       this.add_status = false;
       this.name = "";
     },
     addCol(index) {
-      this.$set(this.arrArrays[index], this.modelArr[index].colName, {
+      this.$set(this.arrArrays[index].cols, this.modelArr[index].colName, {
         max: this.modelArr[index].numberMax,
         list: [],
+        disable: true,
       });
+      
 
       this.modelArr[index]["colName"] = null;
       this.modelArr[index]["numberMax"] = null;
@@ -390,6 +446,8 @@ export default {
           .innerText;
       this.initialIndex = index;
       this.inititalCol = col;
+      console.log(this.initialIndex);
+      console.log(this.inititalCol)
     },
     onEnd(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
@@ -397,21 +455,20 @@ export default {
       var index =
         moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
           .innerText;
-
-      this.max = this.arrArrays[index][col].max;
-      if (this.arrArrays[index][col].list.length > this.max) {
-        var remove = this.arrArrays[index][col].list.splice(
-          this.afterposition,
-          1
-        );
-        console.log(remove);
-        this.arrArrays[this.initialIndex][this.inititalCol].list.splice(
-          this.initialposition,
-          0,
-          { name: remove[0].name, date: remove[0].date }
-        );
-        console.log(this.arrArrays);
-      }
+      
+      console.log(col)
+      console.log(index)
+      console.log(this.arrArrays)
+      /* this.max = this.arrArrays[index].cols[col].max 
+      if (this.arrArrays[index].cols.list.length > this.max){
+        
+        var remove = this.arrArrays[index].cols.list.splice(this.afterposition, 1)
+        console.log(remove)
+        this.arrArrays[this.initialIndex][this.inititalCol].list.splice(this.initialposition, 0, {name: remove[0].name, date: remove[0].date});
+        
+      } */
+      
+      
     },
     checkMove(evt) {
       this.initialposition = evt.draggedContext.index;
@@ -426,3 +483,5 @@ export default {
   min-height: 300px;
 }
 </style>
+
+
