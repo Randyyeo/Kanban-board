@@ -1,12 +1,13 @@
 <template>
-  <div class="container mt-5">
-    <h1 class="text-center">Kanban Board</h1>
+  <div class="container-fluid px-5 mt-5" >
+    <h1 class="text-center text-white" >Kanban Board</h1>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
           v-if="!add_status"
-          class="btn btn-primary float-right"
+          class="btn float-right"
           @click="add_status = true"
+          style="background-color: #c7f9fc;"
         >
           Add extra board
         </button>
@@ -17,17 +18,17 @@
             placeholder="Name"
             class="form-control"
           />
-          <button class="btn btn-primary ms-2" @click="addBoard">Add</button>
+          <button class="btn ms-2" style="background-color: #c7f9fc;" @click="addBoard">Add</button>
         </div>
       </div>
     </div>
     <div>
       <div
-        class="row my-5 border border-2 rounded-2"
+        class="row mb-5 mt-3 "
         v-for="(arr, index) in arrArrays"
         :key="index"
       >
-        <h1>
+        <h1 style="color: white;">
           {{ index }}
           <i
             style="cursor: pointer; font-size: 25px"
@@ -42,11 +43,11 @@
             v-model="newName"
             class="form-control"
           />
-          <button class="btn btn-primary ms-2" @click="update(index)">
+          <button class="btn  ms-2" style="background-color: #c7f9fc;" @click="update(index)">
             Update
           </button>
         </div>
-        <h3>
+        <h3 style="color: white;">
           {{ arr.desc }}
           <i
             style="cursor: pointer; font-size: 25px"
@@ -61,7 +62,7 @@
             v-model="newDesc"
             class="form-control"
           />
-          <button class="btn btn-primary ms-2" @click="updateDesc(index)">
+          <button class="btn ms-2" style="background-color: #c7f9fc;" @click="updateDesc(index)">
             Update
           </button>
         </div>
@@ -69,8 +70,9 @@
         <div class="row mb-3">
           <div class="col-md-6 col-lg-4 d-flex">
             <button
+              style="background-color: #c7f9fc;"
               type="button"
-              class="btn btn-primary"
+              class="btn"
               data-bs-toggle="modal"
               :data-bs-target="'#exampleModal' + index"
             >
@@ -85,9 +87,10 @@
               role="dialog"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              style="border-radius: 20px;"
             >
               <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content" style="border-radius: 20px;">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       Modal title
@@ -124,8 +127,9 @@
                   <div class="modal-footer">
                     <button
                       type="button"
-                      class="btn btn-secondary"
+                      class="btn "
                       data-bs-dismiss="modal"
+                      style="background-color: #c7f9fc;"
                     >
                       Close
                     </button>
@@ -133,7 +137,8 @@
                       data-bs-dismiss="modal"
                       type="button"
                       @click="addTask(index)"
-                      class="btn btn-primary"
+                      class="btn "
+                      style="background-color: #c7f9fc;"
                     >
                       Add
                     </button>
@@ -143,9 +148,10 @@
             </div>
             <button
               type="button"
-              class="btn btn-primary ms-2"
+              class="btn ms-2"
               data-bs-toggle="modal"
               :data-bs-target="'#exampleModal1' + index"
+              style="background-color: #c7f9fc;"
             >
               Add Column
             </button>
@@ -158,9 +164,10 @@
               role="dialog"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              
             >
               <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content" style="border-radius: 20px;">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       Modal title
@@ -195,8 +202,9 @@
                   <div class="modal-footer">
                     <button
                       type="button"
-                      class="btn btn-secondary"
+                      class="btn "
                       data-bs-dismiss="modal"
+                      style="background-color: #c7f9fc;"
                     >
                       Close
                     </button>
@@ -204,7 +212,8 @@
                       data-bs-dismiss="modal"
                       type="button"
                       @click="addCol(index)"
-                      class="btn btn-primary"
+                      class="btn "
+                      style="background-color: #c7f9fc;"
                     >
                       Add
                     </button>
@@ -215,11 +224,11 @@
           </div>
         </div>
         <div
-          class="col-md-6 col-lg-4"
+          class="col-md-4 col-lg-3 col-sm-6"
           v-for="(sub, index1) in arr.cols"
           :key="index1"
         >
-          <div class="p-3 mb-3" :style="'background-color:' + sub.back">
+          <div class="p-3 mb-3 border " :style="'background-color:' + sub.back + ';border-radius: 20px;'">
             <div
               class="d-flex justify-content-between"
               :style="'color:' + sub.color"
@@ -302,8 +311,8 @@ export default {
           taskDescription: null,
           colName: null,
           numberMax: null,
-          back: "",
-          color: "",
+          back: "#009fab",
+          color: "#ffffff",
           updateCard: false,
         },
       },
@@ -314,8 +323,8 @@ export default {
             ToDo: {
               max: 4,
               disable: true,
-              back: "blue",
-              color: "white",
+              back: "#009fab",
+              color: "#ffffff",
               list: [
                 { name: "Code Sign Up Page", date: "", description: "" },
                 { name: "Test Dashboard", date: "", description: "" },
@@ -324,15 +333,15 @@ export default {
               ],
             },
             InProgress: {
-              back: "yellow",
-              color: "black",
+              back: "#009fab",
+              color: "#ffffff",
               max: 2,
               disable: true,
               list: [],
             },
             Done: {
-              back: "green",
-              color: "black",
+              back: "#009fab",
+              color: "#ffffff",
               max: 4,
               disable: true,
               list: [],
@@ -444,8 +453,8 @@ export default {
         taskDescription: null,
         colName: null,
         numberMax: null,
-        back: "",
-        color: "",
+        back: "#009fab",
+        color: "#ffffff",
       });
 
       this.add_status = false;
@@ -462,7 +471,8 @@ export default {
 
       this.modelArr[index]["colName"] = null;
       this.modelArr[index]["numberMax"] = null;
-      this.modelArr[index]["color"] = null;
+      this.modelArr[index]["back"] = "#009fab";
+      this.modelArr[index]["color"] = "#ffffff";
     },
     onStart(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
@@ -505,5 +515,8 @@ export default {
 <style>
 .kanban-column {
   min-height: 300px;
+}
+body{
+  background-image: linear-gradient(to right, #1a164c, #9c9db7)
 }
 </style>
