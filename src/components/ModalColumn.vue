@@ -25,7 +25,7 @@
             type="text"
             class="form-control"
             
-            
+            v-model="name"
           />
           <label class="form-label">Column Colour</label>
           <input

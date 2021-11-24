@@ -33,7 +33,7 @@
                 class="dropdown-item"
                 href="#"
                 data-bs-toggle="modal"
-                :data-bs-target="'#exampleModal2' + display"
+                :data-bs-target="'#exampleModal2' + index1"
                 >Update</a
               >
             </li>
@@ -42,7 +42,7 @@
             class="fas fa-plus ms-2"
             style="cursor: pointer"
             data-bs-toggle="modal"
-            :data-bs-target="'#exampleModal' + display"
+            :data-bs-target="'#exampleModal' + index1"
           ></i>
         </div>
       </div>
@@ -50,7 +50,7 @@
     </div>
     <div
       class="modal fade"
-      :id="'exampleModal2' + display"
+      :id="'exampleModal2' + index1"
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
@@ -93,7 +93,7 @@
         </div>
       </div>
     </div>
-    <modal-task :display="display" :cols="cols" @addTask="addTask">
+    <modal-task :display="display" :col="index1" @addTask="addTask">
     </modal-task>
   </div>
 </template>
@@ -101,7 +101,7 @@
 <script>
 import modalTask from "./ModalTask.vue";
 export default {
-  props: ["back", "display", "index1", "color", "max", "cols"],
+  props: ["back", "display", "index1", "color", "max", ],
   name: "column",
   components: {
     modalTask,

@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    :id="'exampleModal' + display"
+    :id="'exampleModal' + col"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -14,20 +14,7 @@
           <h5 class="modal-title" id="exampleModalLabel">Add a Task</h5>
         </div>
         <div class="modal-body">
-          <label class="form-label">Add to which column</label>
-          <select
-            class="form-select mb-3"
-            aria-label="Default select example"
-            v-model="select"
-          >
-            <option
-              :value="index1"
-              v-for="(sub, index1) in cols"
-              :key="index1"
-            >
-              {{ index1 }}
-            </option>
-          </select>
+          
           <label class="form-label">Task Name</label>
           <input
             type="text"
@@ -78,21 +65,21 @@
 <script>
 export default {
     name: 'modal-task',
-    props: ['display', 'cols'],
+    props: ['display', 'col'],
     data(){
         return {
             desc: null,
             name: null,
-            select: null,
+            
             type: null
         }
     },
     methods:{
         addTask(display){
-            this.$emit("addTask", display, this.desc, this.name, this.select, this.type)
+            
+            this.$emit("addTask", display, this.desc, this.name, this.col, this.type)
             this.desc = ""
             this.name = ""
-            this.select = ""
             this.type = ""
         }
     }

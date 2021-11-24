@@ -91,23 +91,7 @@
 
         <div class="row mb-3">
           <div class="col-md-6 col-lg-4 d-flex">
-            <button
-              style="background-color: #c7f9fc"
-              type="button"
-              class="btn"
-              data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal' + display"
-            >
-              Add Task
-            </button>
-
-            <!-- Modal -->
-            <modal-task
-              :display="display"
-              :cols="displayArr.cols"
-              @addTask="addTask"
-            >
-            </modal-task>
+            
 
             <button
               type="button"
@@ -137,15 +121,16 @@
           :cols="displayArr.cols"
           @removeCard="removeCard"
           @updateCol="updateCol"
+          @addTask="addTask"
           :max="sub.max"
+          
         >
           <draggable
             class="list-group kanban-column"
             :list="sub.list"
             :group="{ name: 'tasks', put: sub.disable }"
             :move="checkMove"
-            @start="onStart"
-            @end="onEnd"
+            
           >
             <card
               :element="element"
@@ -170,7 +155,7 @@ import draggable from "vuedraggable";
 import Vue from "vue";
 import card from "./components/Card.vue";
 import column from "./components/Column.vue";
-import modalTask from "./components/ModalTask.vue";
+
 import modalColumn from "./components/ModalColumn.vue";
 export default {
   components: {
@@ -178,7 +163,7 @@ export default {
     draggable,
     card,
     column,
-    modalTask,
+    
     modalColumn,
   },
   data() {
@@ -314,6 +299,7 @@ export default {
       this.arrArrays[index].cols[index1]["list"] = list;
     },
     addTask(index, desc, name, select, type) {
+      
       if (select && name && desc) {
         var date = new Date();
         date = String(date).substring(4, 15);
@@ -346,7 +332,7 @@ export default {
         back: "#009fab",
         color: "#ffffff",
       });
-
+      this.display = this.name
       this.add_status = false;
       this.name = "";
     },
@@ -359,6 +345,7 @@ export default {
       this.arrArrays[display].cols[name].color = color;
     },
     addCol(index, max, name, back, color) {
+      
       this.$set(this.arrArrays[index].cols, name, {
         max: max,
         list: [],
@@ -366,8 +353,9 @@ export default {
         back: back,
         color: color,
       });
+      
     },
-    onStart(moved) {
+    /* onStart(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
       this.moving = true;
       var index =
@@ -388,15 +376,8 @@ export default {
       console.log(col);
       console.log(index);
       console.log(this.arrArrays);
-      /* this.max = this.arrArrays[index].cols[col].max 
-      if (this.arrArrays[index].cols.list.length > this.max){
-        
-        var remove = this.arrArrays[index].cols.list.splice(this.afterposition, 1)
-        console.log(remove)
-        this.arrArrays[this.initialIndex][this.inititalCol].list.splice(this.initialposition, 0, {name: remove[0].name, date: remove[0].date});
-        
-      } */
-    },
+      
+    }, */
     checkMove(evt) {
       this.initialposition = evt.draggedContext.index;
       this.afterposition = evt.draggedContext.futureIndex;
