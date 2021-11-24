@@ -1,13 +1,24 @@
 <template>
-  <div class="container-fluid px-5 mt-5" >
-    <h1 class="text-center text-white" >Kanban Board</h1>
+  <div class="container-fluid px-5 mt-5">
+    <h1 class="text-center text-white">Kanban Board</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li
+          class="breadcrumb-item"
+          v-for="(arr, index) in arrArrays"
+          :key="index"
+        >
+          <a href="#" @click="change(index)">{{ index }}</a>
+        </li>
+      </ol>
+    </nav>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
           v-if="!add_status"
           class="btn float-right"
           @click="add_status = true"
-          style="background-color: #c7f9fc;"
+          style="background-color: #c7f9fc"
         >
           Add extra board
         </button>
@@ -18,51 +29,62 @@
             placeholder="Name"
             class="form-control"
           />
-          <button class="btn ms-2" style="background-color: #c7f9fc;" @click="addBoard">Add</button>
+          <button
+            class="btn ms-2"
+            style="background-color: #c7f9fc"
+            @click="addBoard"
+          >
+            Add
+          </button>
         </div>
       </div>
     </div>
     <div>
-      <div
-        class="row mb-5 mt-3 "
-        v-for="(arr, index) in arrArrays"
-        :key="index"
-      >
-        <h1 style="color: white;">
-          {{ index }}
+      <div class="row mb-5 mt-3" >
+        <h1 style="color: white">
+          {{ display }}
           <i
             style="cursor: pointer; font-size: 25px"
-            @click="modelArr[index].updateTitle = true"
+            @click="modelArr[display].updateTitle = true"
             class="fas fa-edit"
           ></i>
         </h1>
-        <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateTitle">
+        <div class="d-flex mb-3 w-50" v-if="modelArr[display].updateTitle">
+          
           <input
             type="text"
             placeholder="Update Board Name"
             v-model="newName"
             class="form-control"
           />
-          <button class="btn  ms-2" style="background-color: #c7f9fc;" @click="update(index)">
+          <button
+            class="btn ms-2"
+            style="background-color: #c7f9fc"
+            @click="update(display)"
+          >
             Update
           </button>
         </div>
-        <h3 style="color: white;">
-          {{ arr.desc }}
+        <h3 style="color: white">
+          {{ displayArr.desc }}
           <i
             style="cursor: pointer; font-size: 25px"
-            @click="modelArr[index].updateDesc = true"
+            @click="modelArr[display].updateDesc = true"
             class="fas fa-edit"
           ></i>
         </h3>
-        <div class="d-flex mb-3 w-50" v-if="modelArr[index].updateDesc">
+        <div class="d-flex mb-3 w-50" v-if="modelArr[display].updateDesc">
           <input
             type="text"
             placeholder="Update Board Description"
             v-model="newDesc"
             class="form-control"
           />
-          <button class="btn ms-2" style="background-color: #c7f9fc;" @click="updateDesc(index)">
+          <button
+            class="btn ms-2"
+            style="background-color: #c7f9fc"
+            @click="updateDesc(display)"
+          >
             Update
           </button>
         </div>
@@ -70,11 +92,11 @@
         <div class="row mb-3">
           <div class="col-md-6 col-lg-4 d-flex">
             <button
-              style="background-color: #c7f9fc;"
+              style="background-color: #c7f9fc"
               type="button"
               class="btn"
               data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal' + index"
+              :data-bs-target="'#exampleModal' + display"
             >
               Add Task
             </button>
@@ -82,15 +104,15 @@
             <!-- Modal -->
             <div
               class="modal fade"
-              :id="'exampleModal' + index"
+              :id="'exampleModal' + display"
               tabindex="-1"
               role="dialog"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
-              style="border-radius: 20px;"
+              style="border-radius: 20px"
             >
               <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-content" style="border-radius: 20px">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       Modal title
@@ -101,11 +123,11 @@
                     <select
                       class="form-select mb-3"
                       aria-label="Default select example"
-                      v-model="modelArr[index].select"
+                      v-model="modelArr[display].select"
                     >
                       <option
                         :value="index1"
-                        v-for="(sub, index1) in arr.cols"
+                        v-for="(sub, index1) in displayArr.cols"
                         :key="index1"
                       >
                         {{ index1 }}
@@ -115,30 +137,30 @@
                     <input
                       type="text"
                       class="form-control"
-                      v-model="modelArr[index].taskName"
+                      v-model="modelArr[display].taskName"
                     />
                     <label class="form-label">Task Description</label>
                     <input
                       type="text"
                       class="form-control"
-                      v-model="modelArr[index].taskDescription"
+                      v-model="modelArr[display].taskDescription"
                     />
                   </div>
                   <div class="modal-footer">
                     <button
                       type="button"
-                      class="btn "
+                      class="btn"
                       data-bs-dismiss="modal"
-                      style="background-color: #c7f9fc;"
+                      style="background-color: #c7f9fc"
                     >
                       Close
                     </button>
                     <button
                       data-bs-dismiss="modal"
                       type="button"
-                      @click="addTask(index)"
-                      class="btn "
-                      style="background-color: #c7f9fc;"
+                      @click="addTask(display)"
+                      class="btn"
+                      style="background-color: #c7f9fc"
                     >
                       Add
                     </button>
@@ -150,8 +172,8 @@
               type="button"
               class="btn ms-2"
               data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal1' + index"
-              style="background-color: #c7f9fc;"
+              :data-bs-target="'#exampleModal1' + display"
+              style="background-color: #c7f9fc"
             >
               Add Column
             </button>
@@ -159,15 +181,14 @@
             <!-- Modal -->
             <div
               class="modal fade"
-              :id="'exampleModal1' + index"
+              :id="'exampleModal1' + display"
               tabindex="-1"
               role="dialog"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
-              
             >
               <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-content" style="border-radius: 20px">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       Modal title
@@ -178,42 +199,42 @@
                     <input
                       type="number"
                       class="form-control"
-                      v-model="modelArr[index].numberMax"
+                      v-model="modelArr[display].numberMax"
                     />
                     <label class="form-label">Column Name</label>
                     <input
                       type="text"
                       class="form-control"
-                      v-model="modelArr[index].colName"
+                      v-model="modelArr[display].colName"
                     />
                     <label class="form-label">Column Colour</label>
                     <input
                       type="color"
                       class="form-control w-25"
-                      v-model="modelArr[index].back"
+                      v-model="modelArr[display].back"
                     />
                     <label class="form-label">Header Colour</label>
                     <input
                       type="color"
                       class="form-control w-25"
-                      v-model="modelArr[index].color"
+                      v-model="modelArr[display].color"
                     />
                   </div>
                   <div class="modal-footer">
                     <button
                       type="button"
-                      class="btn "
+                      class="btn"
                       data-bs-dismiss="modal"
-                      style="background-color: #c7f9fc;"
+                      style="background-color: #c7f9fc"
                     >
                       Close
                     </button>
                     <button
                       data-bs-dismiss="modal"
                       type="button"
-                      @click="addCol(index)"
-                      class="btn "
-                      style="background-color: #c7f9fc;"
+                      @click="addCol(display)"
+                      class="btn"
+                      style="background-color: #c7f9fc"
                     >
                       Add
                     </button>
@@ -225,24 +246,25 @@
         </div>
         <div
           class="col-md-4 col-lg-3 col-sm-6"
-          v-for="(sub, index1) in arr.cols"
+          v-for="(sub, index1) in displayArr.cols"
           :key="index1"
         >
-          <div class="p-3 mb-3 border " :style="'background-color:' + sub.back + ';border-radius: 20px;'">
+          <div
+            class="p-3 mb-3 border"
+            :style="'background-color:' + sub.back + ';border-radius: 20px;'"
+          >
             <div
               class="d-flex justify-content-between"
               :style="'color:' + sub.color"
             >
               <h3>{{ index1 }}</h3>
               <i
-                @click="removeCard(index, index1)"
+                @click="removeCard(display, index1)"
                 style="font-size: 24px; cursor: pointer"
                 class="fas fa-times"
               ></i>
             </div>
-            
 
-            
             <draggable
               class="list-group kanban-column"
               :list="sub.list"
@@ -261,7 +283,7 @@
                   <div class="card-title d-flex justify-content-between">
                     <h5>{{ element.name }}</h5>
                     <i
-                      @click="remove(index, index1, index2)"
+                      @click="remove(display, index1, index2)"
                       style="font-size: 24px; cursor: pointer"
                       class="fas fa-times"
                     ></i>
@@ -285,7 +307,7 @@
 <script>
 //import draggable
 import draggable from "vuedraggable";
-import Vue from 'vue'
+import Vue from "vue";
 export default {
   components: {
     //import draggable as a component
@@ -294,6 +316,7 @@ export default {
   data() {
     return {
       // for new tasks
+      moving: false,
       newDesc: null,
       newName: null,
       name: null,
@@ -316,6 +339,7 @@ export default {
           updateCard: false,
         },
       },
+      display: null,
       arrArrays: {
         Tasks: {
           desc: "Tasks that are outstanding",
@@ -358,7 +382,10 @@ export default {
       afterposition: null,
     };
   },
-
+  created(){
+    this.display = Object.keys(this.arrArrays)[0]
+    
+  },
   watch: {
     // whenever question changes, this function will run
     arrArrays: {
@@ -366,24 +393,37 @@ export default {
       deep: true,
       // We have to move our method to a handler field
       handler() {
-        for (var arr in this.arrArrays) {
-          for (var sub in this.arrArrays[arr].cols) {
-            if (
-              this.arrArrays[arr].cols[sub].list.length >=
-              this.arrArrays[arr].cols[sub].max
-            ) {
-              this.arrArrays[arr].cols[sub].disable = false;
-              
-            } else {
-              this.arrArrays[arr].cols[sub].disable = true;
+        if (this.moving){
+          for (var arr in this.arrArrays) {
+            for (var sub in this.arrArrays[arr].cols) {
+              if (
+                this.arrArrays[arr].cols[sub].list.length >=
+                this.arrArrays[arr].cols[sub].max
+              ) {
+                this.arrArrays[arr].cols[sub].disable = false;
+              } else {
+                this.arrArrays[arr].cols[sub].disable = true;
+              }
             }
           }
+          
+          this.moving = false;
+          
         }
-        console.log("hi")
+        
+        
       },
     },
   },
+  computed:{
+    displayArr(){
+      return this.arrArrays[this.display]
+    }
+  },
   methods: {
+    change(index){
+      this.display = index;
+    },
     update(index) {
       var newname = this.newName;
       delete Object.assign(this.arrArrays, {
@@ -402,9 +442,7 @@ export default {
       this.modelArr[index].updateDesc = false;
     },
     removeCard(index, index1) {
-      
-      Vue.delete(this.arrArrays[index].cols, index1)
-      
+      Vue.delete(this.arrArrays[index].cols, index1);
     },
     remove(index, index1, index2) {
       var list = this.arrArrays[index].cols[index1]["list"];
@@ -486,12 +524,13 @@ export default {
       console.log(this.inititalCol);
     },
     onEnd(moved) {
+      this.moving = true;
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
 
       var index =
         moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
           .innerText;
-
+      
       console.log(col);
       console.log(index);
       console.log(this.arrArrays);
@@ -516,7 +555,7 @@ export default {
 .kanban-column {
   min-height: 300px;
 }
-body{
-  background-image: linear-gradient(to right, #1a164c, #9c9db7)
+body {
+  background-image: linear-gradient(to right, #1a164c, #9c9db7);
 }
 </style>
