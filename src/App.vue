@@ -1,17 +1,18 @@
 <template>
   <div class="container-fluid px-5 mt-5">
     <h1 class="text-center text-white">Kanban Board</h1>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li
-          class="breadcrumb-item"
-          v-for="(arr, index) in arrArrays"
-          :key="index"
-        >
-          <a href="#" @click="change(index)">{{ index }}</a>
-        </li>
-      </ol>
-    </nav>
+
+    <ul class="nav nav-tabs">
+      <li
+        
+        v-for="(arr, index) in arrArrays"
+        :key="index"
+        :class="[display !== index ?  + 'constant' : 'constant', 'nav-item', 'tab']"
+        
+      >
+        <a href="#" class="nav-link "  style="text-decoration: none;" @click="change(index)"><h3>{{ index }}</h3></a>
+      </li>
+    </ul>
     <div class="row mt-5">
       <div class="col d-flex justify-content-end">
         <button
@@ -91,8 +92,6 @@
 
         <div class="row mb-3">
           <div class="col-md-6 col-lg-4 d-flex">
-            
-
             <button
               type="button"
               class="btn ms-2"
@@ -104,11 +103,7 @@
             </button>
 
             <!-- Modal -->
-            <modal-column 
-              :display="display" 
-              @addCol="addCol">
-            </modal-column>
-
+            <modal-column :display="display" @addCol="addCol"> </modal-column>
           </div>
         </div>
         <column
@@ -123,14 +118,12 @@
           @updateCol="updateCol"
           @addTask="addTask"
           :max="sub.max"
-          
         >
           <draggable
             class="list-group kanban-column"
             :list="sub.list"
             :group="{ name: 'tasks', put: sub.disable }"
             :move="checkMove"
-            
           >
             <card
               :element="element"
@@ -139,7 +132,6 @@
               :index1="index1"
               :display="display"
               :key="element.name"
-              
               @remove="remove"
             ></card>
           </draggable>
@@ -163,7 +155,7 @@ export default {
     draggable,
     card,
     column,
-    
+
     modalColumn,
   },
   data() {
@@ -204,10 +196,30 @@ export default {
               back: "#009fab",
               color: "#ffffff",
               list: [
-                { name: "Code Sign Up Page", date: "", description: "", type: "high" },
-                { name: "Test Dashboard", date: "", description: "", type: "low" },
-                { name: "Style Registration", date: "", description: "", type: "med" },
-                { name: "Help with Designs", date: "", description: "", type: "low" },
+                {
+                  name: "Code Sign Up Page",
+                  date: "",
+                  description: "",
+                  type: "high",
+                },
+                {
+                  name: "Test Dashboard",
+                  date: "",
+                  description: "",
+                  type: "low",
+                },
+                {
+                  name: "Style Registration",
+                  date: "",
+                  description: "",
+                  type: "med",
+                },
+                {
+                  name: "Help with Designs",
+                  date: "",
+                  description: "",
+                  type: "low",
+                },
               ],
             },
             InProgress: {
@@ -276,7 +288,7 @@ export default {
         [newname]: this.arrArrays[index],
       })[index];
       this.modelArr[index].updateTitle = false;
-      
+
       this.newName = "";
     },
     updateDesc(index) {
@@ -299,7 +311,6 @@ export default {
       this.arrArrays[index].cols[index1]["list"] = list;
     },
     addTask(index, desc, name, select, type) {
-      
       if (select && name && desc) {
         var date = new Date();
         date = String(date).substring(4, 15);
@@ -311,7 +322,7 @@ export default {
             name: name,
             date,
             description: desc,
-            type: type
+            type: type,
           });
           this.$set(this.arrArrays[index].cols[select], "list", list);
         } else {
@@ -332,11 +343,11 @@ export default {
         back: "#009fab",
         color: "#ffffff",
       });
-      this.display = this.name
+      this.display = this.name;
       this.add_status = false;
       this.name = "";
     },
-    updateCol(display, max, name, back, color){
+    updateCol(display, max, name, back, color) {
       delete Object.assign(this.arrArrays[display].cols, {
         [name]: this.arrArrays[display].cols,
       })[display].cols;
@@ -345,7 +356,6 @@ export default {
       this.arrArrays[display].cols[name].color = color;
     },
     addCol(index, max, name, back, color) {
-      
       this.$set(this.arrArrays[index].cols, name, {
         max: max,
         list: [],
@@ -353,7 +363,6 @@ export default {
         back: back,
         color: color,
       });
-      
     },
     /* onStart(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
@@ -392,5 +401,29 @@ export default {
 }
 body {
   background-image: linear-gradient(to right, #1a164c, #9c9db7);
+}
+
+.tab:hover{
+  transition: all 0.5s ease;
+  background-color: white;
+  
+}
+
+.tab a{
+  color: white;
+}
+
+.constant{
+  background-color: white;
+  
+}
+
+.constant a{
+  color: black !important;
+}
+
+.tab:hover a{
+  color: black !important;
+  transition: all 0.5s ease;
 }
 </style>
