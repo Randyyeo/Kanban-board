@@ -1,14 +1,11 @@
 <template>
   <div class="container-fluid px-5 mt-5">
     <h1 class="text-center text-white">Kanban Board</h1>
-
     <ul class="nav nav-tabs">
       <li
-        
         v-for="(arr, index) in arrArrays"
         :key="index"
-        :class="[display !== index ?  + 'constant' : 'constant', 'nav-item', 'tab']"
-        
+        :class="[display !== index ?  + '' : 'constant', 'nav-item', 'tab']"
       >
         <a href="#" class="nav-link "  style="text-decoration: none;" @click="change(index)"><h3>{{ index }}</h3></a>
       </li>
@@ -252,11 +249,11 @@ export default {
     this.display = Object.keys(this.arrArrays)[0];
   },
   watch: {
-    // whenever question changes, this function will run
+    
     arrArrays: {
       // This will let Vue know to look inside the array
       deep: true,
-      // We have to move our method to a handler field
+      
       handler() {
         for (var arr in this.arrArrays) {
           for (var sub in this.arrArrays[arr].cols) {
@@ -287,8 +284,13 @@ export default {
       delete Object.assign(this.arrArrays, {
         [newname]: this.arrArrays[index],
       })[index];
-      this.modelArr[index].updateTitle = false;
-
+      
+      delete Object.assign(this.modelArr, {
+        [newname]: this.modelArr[index],
+      })[index];
+      this.modelArr[newname].updateTitle = false;
+      this.display = newname
+      
       this.newName = "";
     },
     updateDesc(index) {
