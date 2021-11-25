@@ -5,9 +5,15 @@
       <li
         v-for="(arr, index) in arrArrays"
         :key="index"
-        :class="[display !== index ?  + '' : 'constant', 'nav-item', 'tab']"
+        :class="[display !== index ? +'' : 'constant', 'nav-item', 'tab']"
       >
-        <a href="#" class="nav-link "  style="text-decoration: none;" @click="change(index)"><h3>{{ index }}</h3></a>
+        <a
+          href="#"
+          class="nav-link"
+          style="text-decoration: none"
+          @click="change(index)"
+          ><h3>{{ index }}</h3></a
+        >
       </li>
     </ul>
     <div class="row mt-5">
@@ -103,36 +109,44 @@
             <modal-column :display="display" @addCol="addCol"> </modal-column>
           </div>
         </div>
-        <column
-          v-for="(sub, index1) in displayArr.cols"
-          :key="index1"
-          :back="sub.back"
-          :color="sub.color"
-          :display="display"
-          :index1="index1"
-          :cols="displayArr.cols"
-          @removeCard="removeCard"
-          @updateCol="updateCol"
-          @addTask="addTask"
-          :max="sub.max"
+        <div
+          class="d-flex"
+          style="
+            width: 100%;
+            overflow-x:auto;
+          "
         >
-          <draggable
-            class="list-group kanban-column"
-            :list="sub.list"
-            :group="{ name: 'tasks', put: sub.disable }"
-            :move="checkMove"
+          <column
+            v-for="(sub, index1) in displayArr.cols"
+            :key="index1"
+            :back="sub.back"
+            :color="sub.color"
+            :display="display"
+            :index1="index1"
+            :cols="displayArr.cols"
+            @removeCard="removeCard"
+            @updateCol="updateCol"
+            @addTask="addTask"
+            :max="sub.max"
           >
-            <card
-              :element="element"
-              v-for="(element, index2) in sub.list"
-              :index2="index2"
-              :index1="index1"
-              :display="display"
-              :key="element.name"
-              @remove="remove"
-            ></card>
-          </draggable>
-        </column>
+            <draggable
+              class="list-group kanban-column"
+              :list="sub.list"
+              :group="{ name: 'tasks', put: sub.disable }"
+              :move="checkMove"
+            >
+              <card
+                :element="element"
+                v-for="(element, index2) in sub.list"
+                :index2="index2"
+                :index1="index1"
+                :display="display"
+                :key="element.name"
+                @remove="remove"
+              ></card>
+            </draggable>
+          </column>
+        </div>
       </div>
     </div>
   </div>
@@ -233,6 +247,34 @@ export default {
               disable: true,
               list: [],
             },
+            Dones: {
+              back: "#009fab",
+              color: "#ffffff",
+              max: 4,
+              disable: true,
+              list: [],
+            },
+            Doness: {
+              back: "#009fab",
+              color: "#ffffff",
+              max: 4,
+              disable: true,
+              list: [],
+            },
+            Donessss: {
+              back: "#009fab",
+              color: "#ffffff",
+              max: 4,
+              disable: true,
+              list: [],
+            },
+            Donesss: {
+              back: "#009fab",
+              color: "#ffffff",
+              max: 4,
+              disable: true,
+              list: [],
+            },
           },
         },
       },
@@ -249,11 +291,10 @@ export default {
     this.display = Object.keys(this.arrArrays)[0];
   },
   watch: {
-    
     arrArrays: {
       // This will let Vue know to look inside the array
       deep: true,
-      
+
       handler() {
         for (var arr in this.arrArrays) {
           for (var sub in this.arrArrays[arr].cols) {
@@ -284,13 +325,13 @@ export default {
       delete Object.assign(this.arrArrays, {
         [newname]: this.arrArrays[index],
       })[index];
-      
+
       delete Object.assign(this.modelArr, {
         [newname]: this.modelArr[index],
       })[index];
       this.modelArr[newname].updateTitle = false;
-      this.display = newname
-      
+      this.display = newname;
+
       this.newName = "";
     },
     updateDesc(index) {
@@ -405,26 +446,24 @@ body {
   background-image: linear-gradient(to right, #1a164c, #9c9db7);
 }
 
-.tab:hover{
+.tab:hover {
   transition: all 0.5s ease;
   background-color: white;
-  
 }
 
-.tab a{
+.tab a {
   color: white;
 }
 
-.constant{
+.constant {
   background-color: white;
-  
 }
 
-.constant a{
+.constant a {
   color: black !important;
 }
 
-.tab:hover a{
+.tab:hover a {
   color: black !important;
   transition: all 0.5s ease;
 }

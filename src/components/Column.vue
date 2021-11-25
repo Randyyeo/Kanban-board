@@ -1,8 +1,8 @@
 <template>
-  <div class="col-md-4 col-lg-3 col-sm-6 Column">
+  <div class="Column">
     <div
       class="p-3 mb-3 border"
-      :style="'background-color:' + back + ';border-radius: 20px;'"
+      :style="'background-color:' + back + ';border-radius: 20px; width: 250px;'"
     >
       <div class="d-flex justify-content-between" :style="'color:' + color">
         <h4>{{ index1 }}</h4>
@@ -129,6 +129,13 @@ export default {
 </script>
 
 <style>
+.Column{
+    
+    
+    margin-right: 20px;
+    
+}
+
 .Column .dropdown {
   visibility: hidden;
   opacity: 0;
