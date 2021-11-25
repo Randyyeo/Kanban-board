@@ -6,7 +6,7 @@ A **Kanban Board** with the main aim of streamlining and making collaboration of
 Clone our repository or download the zip file.
 
 ```bash
-git clone https://github.com/WADII-G4T4/Kanban-board.git
+git clone https://github.com/Randyyeo/Kanban-board.git
 ```
 
 Go to the folder of the files in your local and use the package manager npm to install UT Buddy.
