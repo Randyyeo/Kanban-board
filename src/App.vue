@@ -6,13 +6,14 @@
         v-for="(arr, index) in arrArrays"
         :key="index"
         :class="[display !== index ? +'' : 'constant', 'nav-item', 'tab']"
+        style="transform: skew(-20deg); margin-left: 10px; border-top-right-radius: 12px; border-top-left-radius: 12px; border-top: none;"
       >
         <a
           href="#"
           class="nav-link"
-          style="text-decoration: none"
+          style="text-decoration: none;border-top-right-radius: 12px; border-top-left-radius: 12px; border-top: none;"
           @click="change(index)"
-          ><h3>{{ index }}</h3></a
+          ><h3 style="transform: skew(20deg)">{{ index }}</h3></a
         >
       </li>
     </ul>
@@ -453,6 +454,7 @@ body {
 
 .tab a {
   color: white;
+  
 }
 
 .constant {
@@ -466,5 +468,6 @@ body {
 .tab:hover a {
   color: black !important;
   transition: all 0.5s ease;
+  
 }
 </style>
