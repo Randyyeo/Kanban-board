@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid px-5 mt-5">
-    <h1 class="text-center text-white">Kanban Board</h1>
+    <h1 class="text-center text-white" style="font-size: 50px;">Kanban Board</h1>
     <ul class="nav nav-tabs">
       <li
         v-for="(arr, index) in arrArrays"
@@ -13,7 +13,7 @@
           class="nav-link"
           style="text-decoration: none;border-top-right-radius: 12px; border-top-left-radius: 12px; border-top: none;"
           @click="change(index)"
-          ><h3 style="transform: skew(20deg)">{{ index }}</h3></a
+          ><h3 style="transform: skew(20deg); font-size: 30px;">{{ index }}</h3></a
         >
       </li>
     </ul>
@@ -47,7 +47,7 @@
     <div>
       <h4 v-if="error" class="text-danger">{{ error }}</h4>
       <div class="row mb-5 mt-3">
-        <h1 style="color: white">
+        <h1 style="color: white; font-size: 30px;">
           {{ display }}
           <i
             style="cursor: pointer; font-size: 25px"
@@ -70,7 +70,7 @@
             Update
           </button>
         </div>
-        <h3 style="color: white">
+        <h3 style="color: white; font-size: 25px;">
           {{ displayArr.desc }}
           <i
             style="cursor: pointer; font-size: 25px"
