@@ -1,17 +1,17 @@
 <template>
-  <div class="container-fluid px-5 mt-5">
+  <div class="container-fluid px-5 mt-5" data-aos="fade-up">
     <h1 class="text-center text-white" style="font-size: 50px;">Kanban Board</h1>
     <ul class="nav nav-tabs">
       <li
         v-for="(arr, index) in arrArrays"
         :key="index"
         :class="[display !== index ? +'' : 'constant', 'nav-item', 'tab']"
-        style="transform: skew(-20deg); margin-left: 10px; border-top-right-radius: 12px; border-top-left-radius: 12px; border-top: none;"
+        style="transform: skew(-20deg); margin-left: 10px; border-top-right-radius: 12px; border-top-left-radius: 12px;"
       >
         <a
           href="#"
           class="nav-link"
-          style="text-decoration: none;border-top-right-radius: 12px; border-top-left-radius: 12px; border-top: none;"
+          style="text-decoration: none;border-top-right-radius: 12px; border-top-left-radius: 12px;"
           @click="change(index)"
           ><h3 style="transform: skew(20deg); font-size: 30px;">{{ index }}</h3></a
         >
