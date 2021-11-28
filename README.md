@@ -1,4 +1,4 @@
-A **Kanban Board** with the main aim of streamlining and making collaboration of projects in school as well as in the corporate world. It has the CRUD functions to ensure that users are able to effectively use this board to their own advantage
+A **Kanban Board** with the main aim of streamlining and making collaboration of projects in school as well as in the corporate world. It has the CRUD functions to ensure that users are able to effectively use this board to their own advantage. This project was created using Vue.js, Vuedraggable and bootstrap
 
 
 ## Installation
