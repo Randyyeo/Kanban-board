@@ -1,6 +1,7 @@
 <template>
   <div
     class="modal fade"
+    
     :id="'exampleModal' + col"
     tabindex="-1"
     role="dialog"

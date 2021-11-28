@@ -2,6 +2,7 @@
   <div
     class="modal fade"
     :id="'exampleModal2' + display"
+    
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"

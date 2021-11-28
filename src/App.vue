@@ -1,76 +1,109 @@
 <template>
-  <div class="container-fluid px-5 mt-5" data-aos="fade-up">
-    <h1 class="text-center text-white" style="font-size: 50px;">Kanban Board</h1>
-    <ul class="nav nav-tabs">
+  <div class="container-fluid px-5 mt-5">
+    <h1
+      class="text-center text-white"
+      style="font-size: 50px; font-family: 'Bungee Inline', cursive"
+    >
+      Kanban Board
+    </h1>
+    <ul class="nav nav-tabs" style="font-family: 'Montserrat', sans-serif">
       <li
         v-for="(arr, index) in arrArrays"
         :key="index"
         :class="[display !== index ? +'' : 'constant', 'nav-item', 'tab']"
-        style="transform: skew(-20deg); margin-left: 10px; border-top-right-radius: 12px; border-top-left-radius: 12px;"
+        style="
+          transform: skew(-20deg);
+          margin-left: 10px;
+          border-top-right-radius: 12px;
+          border-top-left-radius: 12px;
+        "
       >
         <a
           href="#"
           class="nav-link"
-          style="text-decoration: none;border-top-right-radius: 12px; border-top-left-radius: 12px;"
+          style="
+            text-decoration: none;
+            border-top-right-radius: 12px;
+            border-top-left-radius: 12px;
+          "
           @click="change(index)"
-          ><h3 style="transform: skew(20deg); font-size: 30px;">{{ index }}</h3></a
+          ><h3
+            v-if="!modelArr[index].updateTitle"
+            style="transform: skew(20deg); font-size: 30px"
+          >
+            {{ index }}
+            <i
+              v-if="display == index"
+              style="cursor: pointer; font-size: 25px"
+              @click="modelArr[index].updateTitle = true"
+              class="fas fa-edit"
+            ></i>
+          </h3>
+          <div v-if="modelArr[index].updateTitle" class="d-flex">
+            <input
+              style="transform: skew(20deg)"
+              type="text"
+              placeholder="Update Board Name"
+              v-model="newName"
+              class="form-control"
+            />
+            <button
+              class="btn ms-2"
+              style="background-color: #c7f9fc; transform: skew(20deg)"
+              @click="update(index)"
+            >
+              Update
+            </button>
+          </div></a
         >
       </li>
     </ul>
-    <div class="row mt-5">
+    <div class="row mt-5" style="font-family: 'Montserrat', sans-serif;">
+      
       <div class="col d-flex justify-content-end">
         <button
           v-if="!add_status"
           class="btn float-right"
           @click="add_status = true"
-          style="background-color: #c7f9fc"
+          style="background-color: #c7f9fc; font-size: 14px;"
         >
           Add extra board
         </button>
-        <div v-if="add_status" class="d-flex">
+        <div v-if="add_status" class="d-flex" style="font-size: 14px;">
           <input
             type="text"
             v-model="name"
             placeholder="Name"
             class="form-control"
+            style="font-size: 14px;"
           />
           <button
             class="btn ms-2"
-            style="background-color: #c7f9fc"
+            style="background-color: #c7f9fc; font-size: 14px;"
             @click="addBoard"
           >
             Add
           </button>
         </div>
+        <button
+            type="button"
+            class="btn ms-2"
+            data-bs-toggle="modal"
+            :data-bs-target="'#exampleModal1' + display"
+            style="background-color: #c7f9fc; font-size: 14px;"
+          >
+            Add Column
+          </button>
+
+          <!-- Modal -->
+          <modal-column :display="display" @addCol="addCol"> </modal-column>
       </div>
     </div>
-    <div>
+    
+    <div style="font-family: 'Montserrat', sans-serif">
       <h4 v-if="error" class="text-danger">{{ error }}</h4>
-      <div class="row mb-5 mt-3">
-        <h1 style="color: white; font-size: 30px;">
-          {{ display }}
-          <i
-            style="cursor: pointer; font-size: 25px"
-            @click="modelArr[display].updateTitle = true"
-            class="fas fa-edit"
-          ></i>
-        </h1>
-        <div class="d-flex mb-3 w-50" v-if="modelArr[display].updateTitle">
-          <input
-            type="text"
-            placeholder="Update Board Name"
-            v-model="newName"
-            class="form-control"
-          />
-          <button
-            class="btn ms-2"
-            style="background-color: #c7f9fc"
-            @click="update(display)"
-          >
-            Update
-          </button>
-        </div>
-        <h3 style="color: white; font-size: 25px;">
+      <div class="row mb-5 my-3">
+        <h3 style="color: white; font-size: 25px">
           {{ displayArr.desc }}
           <i
             style="cursor: pointer; font-size: 25px"
@@ -94,29 +127,7 @@
           </button>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6 col-lg-4 d-flex">
-            <button
-              type="button"
-              class="btn ms-2"
-              data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal1' + display"
-              style="background-color: #c7f9fc"
-            >
-              Add Column
-            </button>
-
-            <!-- Modal -->
-            <modal-column :display="display" @addCol="addCol"> </modal-column>
-          </div>
-        </div>
-        <div
-          class="d-flex"
-          style="
-            width: 100%;
-            overflow-x:auto;
-          "
-        >
+        <div class="d-flex" style="width: 100%; overflow-x: auto">
           <column
             v-for="(sub, index1) in displayArr.cols"
             :key="index1"
@@ -200,7 +211,7 @@ export default {
       display: null,
       arrArrays: {
         Tasks: {
-          desc: "Tasks that are outstanding",
+          desc: "Outstanding Tasks",
           cols: {
             ToDo: {
               max: 4,
@@ -440,6 +451,9 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap");
+
 .kanban-column {
   min-height: 300px;
 }
@@ -454,7 +468,6 @@ body {
 
 .tab a {
   color: white;
-  
 }
 
 .constant {
@@ -468,6 +481,5 @@ body {
 .tab:hover a {
   color: black !important;
   transition: all 0.5s ease;
-  
 }
 </style>
