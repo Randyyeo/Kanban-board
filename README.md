@@ -9,7 +9,7 @@ Clone our repository or download the zip file.
 git clone https://github.com/Randyyeo/Kanban-board.git
 ```
 
-Go to the folder of the files in your local and use the package manager npm to install UT Buddy.
+Go to the folder of the files in your local and use the package manager npm to install the relevant dependencies.
 
 ```bash
 cd Kanban-board
