@@ -33,7 +33,7 @@
                 class="dropdown-item"
                 href="#"
                 data-bs-toggle="modal"
-                :data-bs-target="'#exampleModal2' + index1"
+                :data-bs-target="'#exampleModal' + index1 "
                 >Update</a
               >
             </li>
@@ -42,7 +42,7 @@
             class="fas fa-plus ms-2"
             style="cursor: pointer"
             data-bs-toggle="modal"
-            :data-bs-target="'#exampleModal' + index1"
+            :data-bs-target="'#exampleModal2' + index1 "
           ></i>
         </div>
       </div>
@@ -50,7 +50,7 @@
     </div>
     <div
       class="modal fade"
-      :id="'exampleModal2' + index1"
+      :id="'exampleModal' + index1"
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
@@ -132,7 +132,7 @@ export default {
 .Column{
     
     
-    margin-right: 20px;
+    margin-right: 25px;
     
 }
 

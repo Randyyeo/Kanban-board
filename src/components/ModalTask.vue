@@ -2,7 +2,7 @@
   <div
     class="modal fade"
     
-    :id="'exampleModal' + col"
+    :id="'exampleModal2' + col"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"

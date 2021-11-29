@@ -103,7 +103,7 @@
     <div style="font-family: 'Montserrat', sans-serif">
       <h4 v-if="error" class="text-danger">{{ error }}</h4>
       <div class="row mb-5 my-3">
-        <h3 style="color: white; font-size: 25px">
+        <h3 style="color: white; font-size: 25px" class="mb-3">
           {{ displayArr.desc }}
           <i
             style="cursor: pointer; font-size: 25px"
@@ -259,34 +259,14 @@ export default {
               disable: true,
               list: [],
             },
-            Dones: {
-              back: "#009fab",
-              color: "#ffffff",
-              max: 4,
-              disable: true,
-              list: [],
-            },
             Doness: {
               back: "#009fab",
               color: "#ffffff",
-              max: 4,
+              max: 1,
               disable: true,
               list: [],
             },
-            Donessss: {
-              back: "#009fab",
-              color: "#ffffff",
-              max: 4,
-              disable: true,
-              list: [],
-            },
-            Donesss: {
-              back: "#009fab",
-              color: "#ffffff",
-              max: 4,
-              disable: true,
-              list: [],
-            },
+            
           },
         },
       },
@@ -371,7 +351,8 @@ export default {
         date = String(date).substring(4, 15);
 
         var list = this.arrArrays[index].cols[select].list;
-        if (list.length !== this.arrArrays[index].cols[select].max) {
+        
+        if (list.length < this.arrArrays[index].cols[select].max) {
           this.error = null;
           list.push({
             name: name,
