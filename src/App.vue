@@ -31,7 +31,8 @@
             v-if="!modelArr[index].updateTitle"
             style="transform: skew(20deg); font-size: 30px"
           >
-            {{ index }}
+            
+            {{arr.name}}
             <i
               v-if="display == index"
               style="cursor: pointer; font-size: 25px"
@@ -104,7 +105,7 @@
       <h4 v-if="error" class="text-danger">{{ error }}</h4>
       <div class="row mb-5 my-3">
         <h3 style="color: white; font-size: 25px" class="mb-3">
-          {{ displayArr.desc }}
+          {{displayArr.desc}}
           <i
             style="cursor: pointer; font-size: 25px"
             @click="modelArr[display].updateDesc = true"
@@ -194,8 +195,8 @@ export default {
       max: 4,
       newTask: "",
       // 4 arrays to keep track of our 4 statuses
-      modelArr: {
-        Tasks: {
+      modelArr: [
+        {
           updateTitle: false,
           updateDesc: false,
           select: null,
@@ -207,10 +208,11 @@ export default {
           color: "#ffffff",
           updateCard: false,
         },
-      },
-      display: null,
-      arrArrays: {
-        Tasks: {
+      ],
+      display: "",
+      arrArrays: [
+        {
+          name: "Tasks",
           desc: "Outstanding Tasks",
           cols: {
             ToDo: {
@@ -269,7 +271,7 @@ export default {
             
           },
         },
-      },
+      ],
       length: null,
       initialIndex: null,
       inititalCol: null,
@@ -277,10 +279,11 @@ export default {
       afterCol: null,
       initialposition: null,
       afterposition: null,
+      update_status: false
     };
   },
   created() {
-    this.display = Object.keys(this.arrArrays)[0];
+    this.display = 0;
   },
   watch: {
     arrArrays: {
@@ -288,47 +291,62 @@ export default {
       deep: true,
 
       handler() {
-        for (var arr in this.arrArrays) {
-          for (var sub in this.arrArrays[arr].cols) {
-            if (
-              this.arrArrays[arr].cols[sub].list.length >=
-              this.arrArrays[arr].cols[sub].max
-            ) {
-              this.arrArrays[arr].cols[sub].disable = false;
-            } else {
-              this.arrArrays[arr].cols[sub].disable = true;
+        
+          for (var arr of this.arrArrays) {
+            for (var sub in arr.cols) {
+              if (
+                arr.cols[sub].list.length >=
+                arr.cols[sub].max
+              ) {
+                arr.cols[sub].disable = false;
+              } else {
+                arr.cols[sub].disable = true;
+              }
             }
           }
-        }
+        
+        
       },
     },
   },
   computed: {
     displayArr() {
+      console.log("HI")
       return this.arrArrays[this.display];
     },
   },
+  
   methods: {
+    status_update(display){
+      console.log(display)
+    },
     change(index) {
       this.display = index;
     },
     update(index) {
-      var newname = this.newName;
-      delete Object.assign(this.arrArrays, {
+      this.update_status = true;
+      
+      
+      /* delete Object.assign(this.arrArrays, {
         [newname]: this.arrArrays[index],
       })[index];
 
       delete Object.assign(this.modelArr, {
         [newname]: this.modelArr[index],
-      })[index];
-      this.modelArr[newname].updateTitle = false;
-      this.display = newname;
-
+      })[index]; */
+      this.arrArrays[index].name = this.newName;
+      
+      
+      this.modelArr[index].updateTitle = false;
+      this.display = index;
+      
       this.newName = "";
     },
     updateDesc(index) {
-      var newname = this.newDesc;
-      this.arrArrays[index].desc = newname;
+      
+      
+      this.arrArrays[index].desc = this.newDesc;
+      console.log(this.arrArrays[index])
       this.newDesc = "";
       this.modelArr[index].updateDesc = false;
     },
@@ -367,8 +385,9 @@ export default {
       }
     },
     addBoard() {
-      this.$set(this.arrArrays, this.name, { desc: "", cols: {} });
-      this.$set(this.modelArr, this.name, {
+      /* this.$set(this.arrArrays, this.name, { desc: "", cols: {} }); */
+      this.arrArrays.push({name: this.name, desc: "", cols: {} })
+      /* this.$set(this.modelArr, this.name, {
         updateTitle: false,
         updateDesc: false,
         select: null,
@@ -378,15 +397,30 @@ export default {
         numberMax: null,
         back: "#009fab",
         color: "#ffffff",
-      });
-      this.display = this.name;
+      }); */
+      this.modelArr.push({
+        updateTitle: false,
+        updateDesc: false,
+        select: null,
+        taskName: null,
+        taskDescription: null,
+        colName: null,
+        numberMax: null,
+        back: "#009fab",
+        color: "#ffffff",
+      })
+      this.display++;
       this.add_status = false;
       this.name = "";
     },
-    updateCol(display, max, name, back, color) {
+    updateCol(display, old, max, name, back, color) {
+      console.log(display)
+      console.log(this.arrArrays[display].cols)
+      
       delete Object.assign(this.arrArrays[display].cols, {
-        [name]: this.arrArrays[display].cols,
-      })[display].cols;
+        [name]: this.arrArrays[display].cols[old],
+      })[old];
+      
       this.arrArrays[display].cols[name].max = max;
       this.arrArrays[display].cols[name].back = back;
       this.arrArrays[display].cols[name].color = color;
@@ -399,6 +433,7 @@ export default {
         back: back,
         color: color,
       });
+      
     },
     /* onStart(moved) {
       var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;

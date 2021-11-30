@@ -83,7 +83,7 @@
             <button
               data-bs-dismiss="modal"
               type="button"
-              @click="addCol(display)"
+              @click="addCol()"
               class="btn"
               style="background-color: #c7f9fc"
             >
@@ -103,6 +103,11 @@ import modalTask from "./ModalTask.vue";
 export default {
   props: ["back", "display", "index1", "color", "max", ],
   name: "column",
+  data(){
+    return {
+      old: this.index1
+    }
+  },
   components: {
     modalTask,
   },
@@ -111,10 +116,11 @@ export default {
     removeCard(display, index1) {
       this.$emit("removeCard", display, index1);
     },
-    addCol(display) {
+    addCol() {
       this.$emit(
         "updateCol",
-        display,
+        this.display,
+        this.old,
         this.max,
         this.index1,
         this.back,
