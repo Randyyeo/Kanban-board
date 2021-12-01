@@ -306,15 +306,13 @@ export default {
   },
   computed: {
     displayArr() {
-      console.log("HI")
+      
       return this.arrArrays[this.display];
     },
   },
   
   methods: {
-    status_update(display){
-      console.log(display)
-    },
+    
     change(index) {
       this.display = index;
     },
@@ -333,7 +331,7 @@ export default {
       
       
       this.arrArrays[index].desc = this.newDesc;
-      console.log(this.arrArrays[index])
+      
       this.newDesc = "";
       this.modelArr[index].updateDesc = false;
     },
@@ -391,22 +389,18 @@ export default {
       this.name = "";
     },
     updateCol(display, old, max, name, back, color) {
-      console.log(display)
-      console.log(this.arrArrays[display].cols)
-      console.log(old);
-      console.log(name)
+      
       if (name !== old){
         delete Object.assign(this.arrArrays[display].cols, {
         [name]: this.arrArrays[display].cols[old],
       })[old];
       }
       
-      console.log(max)
-      console.log(this.arrArrays[display].cols)
+      
       this.arrArrays[display].cols[name].max = max;
       this.arrArrays[display].cols[name].back = back;
       this.arrArrays[display].cols[name].color = color;
-      console.log(this.arrArrays[display].cols[name])
+      
     },
     addCol(index, max, name, back, color) {
       this.$set(this.arrArrays[index].cols, name, {
