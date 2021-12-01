@@ -194,7 +194,7 @@ export default {
       add_status: false,
       max: 4,
       newTask: "",
-      // 4 arrays to keep track of our 4 statuses
+      // arr for CRUD
       modelArr: [
         {
           updateTitle: false,
@@ -210,6 +210,7 @@ export default {
         },
       ],
       display: "",
+      // arr for all the tasks
       arrArrays: [
         {
           name: "Tasks",
@@ -273,12 +274,6 @@ export default {
         },
       ],
       length: null,
-      initialIndex: null,
-      inititalCol: null,
-      afterIndex: null,
-      afterCol: null,
-      initialposition: null,
-      afterposition: null,
       update_status: false
     };
   },
@@ -326,14 +321,6 @@ export default {
     update(index) {
       this.update_status = true;
       
-      
-      /* delete Object.assign(this.arrArrays, {
-        [newname]: this.arrArrays[index],
-      })[index];
-
-      delete Object.assign(this.modelArr, {
-        [newname]: this.modelArr[index],
-      })[index]; */
       this.arrArrays[index].name = this.newName;
       
       
@@ -385,19 +372,9 @@ export default {
       }
     },
     addBoard() {
-      /* this.$set(this.arrArrays, this.name, { desc: "", cols: {} }); */
+      
       this.arrArrays.push({name: this.name, desc: "", cols: {} })
-      /* this.$set(this.modelArr, this.name, {
-        updateTitle: false,
-        updateDesc: false,
-        select: null,
-        taskName: null,
-        taskDescription: null,
-        colName: null,
-        numberMax: null,
-        back: "#009fab",
-        color: "#ffffff",
-      }); */
+      
       this.modelArr.push({
         updateTitle: false,
         updateDesc: false,
@@ -416,14 +393,20 @@ export default {
     updateCol(display, old, max, name, back, color) {
       console.log(display)
       console.log(this.arrArrays[display].cols)
-      
-      delete Object.assign(this.arrArrays[display].cols, {
+      console.log(old);
+      console.log(name)
+      if (name !== old){
+        delete Object.assign(this.arrArrays[display].cols, {
         [name]: this.arrArrays[display].cols[old],
       })[old];
+      }
       
+      console.log(max)
+      console.log(this.arrArrays[display].cols)
       this.arrArrays[display].cols[name].max = max;
       this.arrArrays[display].cols[name].back = back;
       this.arrArrays[display].cols[name].color = color;
+      console.log(this.arrArrays[display].cols[name])
     },
     addCol(index, max, name, back, color) {
       this.$set(this.arrArrays[index].cols, name, {
@@ -435,29 +418,7 @@ export default {
       });
       
     },
-    /* onStart(moved) {
-      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
-      this.moving = true;
-      var index =
-        moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
-          .innerText;
-      this.initialIndex = index;
-      this.inititalCol = col;
-      console.log(this.initialIndex);
-      console.log(this.inititalCol);
-    },
-    onEnd(moved) {
-      var col = moved.to.parentNode.getElementsByTagName("h3")[0].innerText;
-
-      var index =
-        moved.to.parentNode.parentNode.parentNode.getElementsByTagName("h1")[0]
-          .innerText;
-
-      console.log(col);
-      console.log(index);
-      console.log(this.arrArrays);
-      
-    }, */
+    
     checkMove(evt) {
       this.initialposition = evt.draggedContext.index;
       this.afterposition = evt.draggedContext.futureIndex;
